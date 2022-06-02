@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const app = express();
 
+const homeRouter = require("./routes/home.route");
 const productRouter = require("./routes/products.route");
 const categoryRouter = require("./routes/categories.route");
 const attributeRouter = require("./routes/attributes.route");
@@ -21,6 +22,7 @@ mongoose
   .then(() => console.log("MONGODB connected successfully"))
   .catch((error) => console.log(error));
 
+app.use("/api", homeRouter);
 app.use("/api", productRouter);
 app.use("/api", attributeRouter);
 app.use("/api", categoryRouter);
