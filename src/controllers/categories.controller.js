@@ -54,6 +54,14 @@ module.exports = {
       res.status(500).send("Lấy danh mục thất bại");
     }
   },
+  getCategoriesByType: async (req, res) => {
+    try {
+      const categories = await Category.find({ type: req.params.type }).exec();
+      res.status(200).json(categories);
+    } catch (error) {
+      res.status(500).send("Lấy danh mục thất bại");
+    }
+  },
   getCategoryByType: async (req, res) => {
     try {
       const category = await Category.findOne({ type: req.params.type }).exec();

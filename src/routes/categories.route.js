@@ -9,11 +9,13 @@ const {
   editCategory,
   getCategoryByType,
   getCategoryByAscii,
+  getCategoriesByType,
 } = require("../controllers/categories.controller");
 
 router.get("/categories", getCategories);
 router.get("/categories/:id", getCategory);
 router.get("/categories/type/:type", getCategoryByType);
+router.get("/categories/list-type/:type", getCategoriesByType);
 router.get("/categories/ascii/:nameAscii", getCategoryByAscii);
 router.post("/categories", addCategory);
 router.put("/categories/:id", editCategory);

@@ -49,6 +49,16 @@ module.exports = {
       res.status(500).send("Lấy thuộc tính thất bại");
     }
   },
+  getAttributesType: async (req, res) => {
+    try {
+      const attributes = await Attribute.find({
+        parentType: req.params.parentType,
+      }).exec();
+      res.status(200).json(attributes);
+    } catch (error) {
+      res.status(500).send("Lấy thuộc tính thất bại");
+    }
+  },
   addAttribute: async (req, res) => {
     try {
       const attribute = await new Attribute(req.body).save();
