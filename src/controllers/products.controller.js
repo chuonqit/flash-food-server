@@ -1,5 +1,6 @@
 const paginatorLabels = require("../configs/paginatorLabels");
 const Product = require("../models/products.model");
+const cloudinaryBase64Upload = require("../utils/cloudinary");
 
 const populate = [
   "category",
@@ -66,19 +67,36 @@ module.exports = {
     }
   },
   addProduct: async (req, res) => {
-    console.log(req.body);
     try {
-      const product = await new Product(req.body).save();
+      const parseImage = JSON.parse(req.body.image);
+      let imageFile = "";
+      if (parseImage.base64) {
+        imageFile = await cloudinaryBase64Upload(parseImage.base64);
+      }
+      const product = await new Product({ ...req.body, image: imageFile }).save();
       res.status(201).json(product);
     } catch (error) {
+      console.log(error);
       res.status(500).send("Thêm sản phẩm thất bại");
     }
   },
   editProduct: async (req, res) => {
     try {
+      let imageFile = req.body.image;
+      if (!req.body.image.includes("http")) {
+        const parseImage = JSON.parse(req.body.image);
+        if (parseImage.base64) {
+          imageFile = await cloudinaryBase64Upload(parseImage.base64);
+        }
+      }
       const product = await Product.findOneAndUpdate(
         { _id: req.params.id },
-        { $set: req.body },
+        {
+          $set: {
+            ...req.body,
+            image: imageFile,
+          },
+        },
         { new: true }
       ).exec();
       res.status(200).json(product);

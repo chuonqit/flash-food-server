@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const cloudinary = require("cloudinary");
 
 const app = express();
 
@@ -16,6 +17,12 @@ app.use(express.json({ limit: "50mb" }));
 dotenv.config({ path: __dirname + "/configs/settings.env" });
 
 app.use(cors());
+
+cloudinary.config({
+  cloud_name: "lavana",
+  api_key: "742189537939194",
+  api_secret: "-s8kHVYptjhA-F3I7KyNFKZVswE",
+});
 
 mongoose
   .connect(process.env.MONGODB_ONLINE)
