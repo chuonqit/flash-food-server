@@ -59,7 +59,7 @@ module.exports = {
   },
   getProduct: async (req, res) => {
     try {
-      const products = await Product.findOne({ _id: req.params.id }).populate(populate).exec();
+      const products = await Product.findOne({ _id: req.params.id }).exec();
       res.status(200).json(products);
     } catch (error) {
       res.status(500).send("Lấy sản phẩm thất bại");

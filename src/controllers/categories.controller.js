@@ -3,6 +3,14 @@ const Category = require("../models/categories.model");
 const slugify = require("slugify");
 const Product = require("../models/products.model");
 
+const productPopulate = [
+  "category",
+  "attributes.size",
+  "attributes.topping",
+  "attributes.ice",
+  "attributes.sugar",
+];
+
 module.exports = {
   getCategories: async (req, res) => {
     try {
@@ -65,7 +73,9 @@ module.exports = {
   getCategoryByType: async (req, res) => {
     try {
       const category = await Category.findOne({ type: req.params.type }).exec();
-      const products = await Product.find({ category: category._id }).exec();
+      const products = await Product.find({ category: category._id })
+        .populate(productPopulate)
+        .exec();
       res.status(200).json({
         category,
         products,
@@ -77,7 +87,9 @@ module.exports = {
   getCategoryByAscii: async (req, res) => {
     try {
       const category = await Category.findOne({ nameAscii: req.params.nameAscii }).exec();
-      const products = await Product.find({ category: category._id }).exec();
+      const products = await Product.find({ category: category._id })
+        .populate(productPopulate)
+        .exec();
       res.status(200).json({
         category,
         products,
