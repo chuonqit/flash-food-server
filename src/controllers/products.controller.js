@@ -68,10 +68,9 @@ module.exports = {
   },
   addProduct: async (req, res) => {
     try {
-      const parseImage = JSON.parse(req.body.image);
       let imageFile = "";
-      if (parseImage.base64) {
-        imageFile = await cloudinaryBase64Upload(parseImage.base64);
+      if (req.body.image.includes(";base64")) {
+        imageFile = await cloudinaryBase64Upload(req.body.image);
       }
       const product = await new Product({ ...req.body, image: imageFile }).save();
       res.status(201).json(product);
@@ -82,12 +81,11 @@ module.exports = {
   },
   editProduct: async (req, res) => {
     try {
-      let imageFile = req.body.image;
-      if (!req.body.image.includes("http")) {
-        const parseImage = JSON.parse(req.body.image);
-        if (parseImage.base64) {
-          imageFile = await cloudinaryBase64Upload(parseImage.base64);
-        }
+      let imageFile = "";
+      if (req.body.image.includes(";base64")) {
+        imageFile = await cloudinaryBase64Upload(req.body.image);
+      } else {
+        imageFile = req.body.image;
       }
       const product = await Product.findOneAndUpdate(
         { _id: req.params.id },

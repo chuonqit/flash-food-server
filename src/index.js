@@ -24,8 +24,16 @@ cloudinary.config({
   api_secret: "-s8kHVYptjhA-F3I7KyNFKZVswE",
 });
 
+let mongodbConnectURL = "";
+
+if (process.env.NODE_ENV == "production") {
+  mongodbConnectURL = process.env.MONGODB_ONLINE;
+} else {
+  mongodbConnectURL = process.env.MONGODB_OFFLINE;
+}
+
 mongoose
-  .connect(process.env.MONGODB_ONLINE)
+  .connect(mongodbConnectURL)
   .then(() => console.log("MONGODB connected successfully"))
   .catch((error) => console.log(error));
 

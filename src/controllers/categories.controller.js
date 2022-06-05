@@ -2,6 +2,7 @@ const paginatorLabels = require("../configs/paginatorLabels");
 const Category = require("../models/categories.model");
 const slugify = require("slugify");
 const Product = require("../models/products.model");
+const cloudinaryBase64Upload = require("../utils/cloudinary");
 
 const productPopulate = [
   "category",
@@ -100,9 +101,14 @@ module.exports = {
   },
   addCategory: async (req, res) => {
     try {
+      let imageFile = "";
+      if (req.body.image.includes(";base64")) {
+        imageFile = await cloudinaryBase64Upload(req.body.image);
+      }
       const category = await new Category({
-        nameAscii: slugify(req.body.name.toLowerCase()),
         ...req.body,
+        nameAscii: slugify(req.body.name.toLowerCase()),
+        image: imageFile,
       }).save();
       res.status(201).json(category);
     } catch (error) {
@@ -111,9 +117,15 @@ module.exports = {
   },
   editCategory: async (req, res) => {
     try {
+      let imageFile = "";
+      if (req.body.image.includes(";base64")) {
+        imageFile = await cloudinaryBase64Upload(req.body.image);
+      } else {
+        imageFile = req.body.image;
+      }
       const category = await Category.findOneAndUpdate(
         { _id: req.params.id },
-        { $set: req.body },
+        { $set: { ...req.body, image: imageFile } },
         { new: true }
       ).exec();
       res.status(201).json(category);
